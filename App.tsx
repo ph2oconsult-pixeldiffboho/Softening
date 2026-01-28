@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { WaterQualityData, SofteningResults, ChartDataPoint } from './types';
 import { calculateSoftening } from './services/softeningCalculations';
