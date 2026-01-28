@@ -11,7 +11,7 @@
         #root { min-height: 100vh; }
     </style>
     <script>
-        // Polyfill process for browser compatibility
+        // Global process polyfill for ESM libraries
         window.process = { 
             env: { 
                 NODE_ENV: 'production',
@@ -26,7 +26,7 @@
     "react-dom": "https://esm.sh/react-dom@19.0.0",
     "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
     "@google/genai": "https://esm.sh/@google/genai@0.21.0",
-    "recharts": "https://esm.sh/recharts@2.15.0?external=react,react-dom",
+    "recharts": "https://esm.sh/recharts@2.15.0?external=react,react-dom,react-is",
     "lucide-react": "https://esm.sh/lucide-react@0.475.0?external=react,react-dom",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/"
