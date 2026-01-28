@@ -6,9 +6,10 @@ console.log("SoftH2O: Engine boot sequence initiated...");
 
 const mountApp = () => {
   const rootElement = document.getElementById('root');
-
+  
   if (!rootElement) {
-    console.error("SoftH2O Critical: Could not find mount point #root");
+    console.error("SoftH2O: Mount point #root not found. Retrying in 50ms...");
+    setTimeout(mountApp, 50);
     return;
   }
 
@@ -19,29 +20,20 @@ const mountApp = () => {
         <App />
       </StrictMode>
     );
-    console.log("SoftH2O: React DOM render successful.");
-  } catch (err) {
-    console.error("SoftH2O: Failed to initialize React application:", err);
+    console.log("SoftH2O: Application mounted successfully.");
+  } catch (error) {
+    console.error("SoftH2O: Render failed:", error);
     rootElement.innerHTML = `
-      <div style="padding: 40px; font-family: system-ui, -apple-system, sans-serif; text-align: center; color: #1e293b; background: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center;">
-        <div style="background: white; border: 1px solid #e2e8f0; padding: 32px; border-radius: 24px; max-width: 480px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
-          <h1 style="color: #ef4444; font-size: 1.5rem; font-weight: 800; margin-bottom: 12px;">Boot Error</h1>
-          <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 24px;">The application encountered a critical error during startup. This usually happens due to script loading failures.</p>
-          <div style="background: #1e293b; color: #38bdf8; padding: 16px; border-radius: 12px; text-align: left; font-family: monospace; font-size: 12px; overflow-x: auto; margin-bottom: 24px;">
-            ${err instanceof Error ? err.message : String(err)}
-          </div>
-          <button onclick="window.location.reload()" style="background: #2563eb; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-            Try Again
-          </button>
+      <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: sans-serif; padding: 20px;">
+        <div style="background: white; border: 1px solid #fee2e2; padding: 32px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); max-width: 400px; text-align: center;">
+          <h1 style="color: #dc2626; margin-bottom: 12px; font-size: 1.25rem;">Boot Error</h1>
+          <p style="color: #4b5563; font-size: 0.875rem;">The water treatment engine failed to initialize.</p>
+          <pre style="margin-top: 16px; background: #f3f4f6; padding: 12px; border-radius: 8px; font-size: 11px; text-align: left; overflow-x: auto;">${error instanceof Error ? error.message : String(error)}</pre>
         </div>
       </div>
     `;
   }
 };
 
-// Ensure DOM is ready before mounting
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', mountApp);
-} else {
-  mountApp();
-}
+// Start mounting immediately since the script is deferred and at the bottom of the body
+mountApp();
