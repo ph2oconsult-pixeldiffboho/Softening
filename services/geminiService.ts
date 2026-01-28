@@ -1,37 +1,62 @@
 
 import { GoogleGenAI } from "@google/genai";
-import { WaterParameters, CalculationResults } from "../types";
+import { WaterQualityData, SofteningResults } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+export const getSofteningAdvice = async (input: WaterQualityData, output: SofteningResults): Promise<string> => {
+  // Check if API key is available
+  if (!process.env.API_KEY) {
+    return "API Key is not configured. Please ensure you have selected a key if prompted.";
+  }
 
-export const analyzeWaterProfile = async (params: WaterParameters, results: CalculationResults) => {
+  // Use Gemini 3 Pro for advanced engineering reasoning
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  
+  const prompt = `
+    Role: Senior Water Process Engineer
+    Task: Analyze chemical softening results and provide operational advice.
+    
+    RAW WATER DATA:
+    - pH: ${input.ph}
+    - Calcium (Ca): ${input.calcium} mg/L
+    - Magnesium (Mg): ${input.magnesium} mg/L
+    - Alkalinity: ${input.alkalinity} mg/L CaCO3
+    - Conductivity: ${input.conductivity} uS/cm
+    - Sulphate: ${input.sulphate} mg/L
+    
+    TREATMENT PREDICTIONS:
+    - Lime Dose: ${output.limeDose.toFixed(1)} mg/L Ca(OH)2
+    - Soda Ash Dose: ${output.sodaAshDose.toFixed(1)} mg/L Na2CO3
+    - Sludge Production: ${output.sludgeProduced.toFixed(1)} mg/L dry solids
+    
+    FINAL WATER QUALITY:
+    - pH: ${output.softenedPh}
+    - Total Hardness: ${output.softenedHardness.toFixed(1)} mg/L CaCO3
+    - Alkalinity: ${output.softenedAlkalinity.toFixed(1)} mg/L CaCO3
+    - Langelier Saturation Index (LSI): ${output.lsi.toFixed(2)}
+    - CCPP: ${output.ccpp.toFixed(1)} mg/L CaCO3
+    
+    Instructions:
+    Provide exactly three professional, high-impact bullet points:
+    1. A comment on the chemical strategy (efficiency of lime/soda usage).
+    2. A warning or confirmation regarding scaling/corrosion risks based on LSI/CCPP.
+    3. A specific recommendation for sludge handling or post-treatment (e.g. recarbonation).
+    Use precise, expert terminology.
+  `;
+
   try {
-    const prompt = `
-      As a water chemistry expert, analyze the following water profile and provide engineering recommendations.
-      
-      INPUTS:
-      - pH: ${params.pH}
-      - Temperature: ${params.temp}°C
-      - TDS: ${params.tds} mg/L
-      - Calcium Hardness: ${params.calcium} mg/L as CaCO3
-      - Total Alkalinity: ${params.alkalinity} mg/L as CaCO3
-      
-      CALCULATED RESULTS:
-      - Langelier Saturation Index (LSI): ${results.lsi.toFixed(2)}
-      - CCPP (Precipitation Potential): ${results.ccpp.toFixed(2)} mg/L as CaCO3
-      - Saturation State: ${results.saturationCondition}
-      
-      Explain the implications for plumbing (scaling vs. corrosion), health, and potential treatment strategies to stabilize this water. Keep the tone professional and technical.
-    `;
-
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-3-pro-preview',
       contents: prompt,
+      config: {
+        thinkingConfig: { thinkingBudget: 4000 }
+      }
     });
-
-    return response.text;
-  } catch (error) {
+    return response.text || "No insights generated.";
+  } catch (error: any) {
     console.error("Gemini Error:", error);
-    return "Failed to fetch AI analysis. Please check your network or API configuration.";
+    if (error.message?.includes("entity was not found")) {
+      return "ERROR_KEY_REQUIRED";
+    }
+    return `Error generating insights: ${error.message || 'Unknown error'}`;
   }
 };
