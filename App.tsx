@@ -36,6 +36,7 @@ const App: React.FC = () => {
           const selected = await aiStudio.hasSelectedApiKey();
           if (mounted) setHasKey(!!selected);
         } else {
+          // If not in AI Studio environment, assume process.env.API_KEY is handled externally
           if (mounted) setHasKey(true); 
         }
       } catch (err) {
@@ -182,6 +183,7 @@ const App: React.FC = () => {
       </header>
 
       <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Input Sidebar */}
         <section className="lg:col-span-4 space-y-6">
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 overflow-hidden relative">
             <div className="absolute top-0 left-0 w-1 h-full bg-blue-600"></div>
@@ -214,6 +216,7 @@ const App: React.FC = () => {
           </div>
         </section>
 
+        {/* Main Content */}
         <section className="lg:col-span-8 space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <ResultCard 
