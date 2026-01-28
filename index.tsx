@@ -1,27 +1,27 @@
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React, { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
-  console.error("Critical: Could not find root element with id 'root'");
+  console.error("Critical: Root element #root not found.");
 } else {
   try {
-    const root = ReactDOM.createRoot(rootElement);
+    const root = createRoot(rootElement);
     root.render(
-      <React.StrictMode>
+      <StrictMode>
         <App />
-      </React.StrictMode>
+      </StrictMode>
     );
-  } catch (error) {
-    console.error("React Mounting Error:", error);
+  } catch (err) {
+    console.error("Failed to render React app:", err);
     rootElement.innerHTML = `
-      <div style="padding: 40px; text-align: center; font-family: sans-serif; color: #334155;">
-        <h2 style="color: #ef4444;">Application Failed to Load</h2>
-        <p>There was an error initializing the SoftH2O engine.</p>
-        <pre style="background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: left; display: inline-block; font-size: 12px;">${error instanceof Error ? error.message : String(error)}</pre>
+      <div style="padding: 2rem; font-family: system-ui; text-align: center; color: #334155;">
+        <h1 style="color: #e11d48; font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">Initialization Error</h1>
+        <p style="margin-bottom: 1rem;">The SoftH2O engine failed to initialize.</p>
+        <pre style="background: #f1f5f9; padding: 1rem; border-radius: 0.5rem; text-align: left; display: inline-block; font-size: 0.75rem; max-width: 100%; overflow-x: auto;">${err instanceof Error ? err.stack || err.message : String(err)}</pre>
       </div>
     `;
   }
