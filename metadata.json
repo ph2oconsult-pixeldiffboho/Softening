@@ -1,5 +1,8 @@
+
 {
-  "name": "CCPP & LSI Water Quality Calculator",
-  "description": "A professional tool for calculating Calcium Carbonate Precipitation Potential (CCPP) and Langelier Saturation Index (LSI) for potable water systems, featuring target optimization and visual scenario analysis.",
-  "requestFramePermissions": []
+  "name": "SoftH2O Pro: Lime & Soda Ash Softening Simulator",
+  "description": "Professional engineering tool for water treatment. Predicts chemical dosages (Lime/Soda Ash), sludge production, and final water quality including LSI and CCPP.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
 }
