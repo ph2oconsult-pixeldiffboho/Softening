@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { WaterQualityData, SofteningResults, ChartDataPoint } from './types';
 import { calculateSoftening } from './services/softeningCalculations';
@@ -7,7 +8,7 @@ import {
 } from 'recharts';
 import { 
   Beaker, Database, ChevronRight, Activity, 
-  Trash2, ArrowRightLeft, Info, BrainCircuit, Waves, Settings, ShieldAlert, Loader2
+  Trash2, ArrowRightLeft, Info, BrainCircuit, Waves, Settings, ShieldAlert, Loader2, TrendingDown
 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -215,30 +216,38 @@ const App: React.FC = () => {
         </section>
 
         <section className="lg:col-span-8 space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <ResultCard 
               label="Lime Dose" 
               value={results.limeDose.toFixed(1)} 
-              unit="mg/L Ca(OH)₂" 
-              icon={<Beaker className="text-white w-5 h-5" />}
+              unit="mg/L" 
+              icon={<Beaker className="text-white w-4 h-4" />}
               gradient="bg-blue-600"
-              footer="Hydroxide Dosage"
+              footer="Ca(OH)₂ Dosage"
             />
             <ResultCard 
               label="Soda Ash" 
               value={results.sodaAshDose.toFixed(1)} 
-              unit="mg/L Na₂CO₃" 
-              icon={<ArrowRightLeft className="text-white w-5 h-5" />}
+              unit="mg/L" 
+              icon={<ArrowRightLeft className="text-white w-4 h-4" />}
               gradient="bg-emerald-600"
-              footer="Carbonate Dosage"
+              footer="Na₂CO₃ Dosage"
+            />
+            <ResultCard 
+              label="Hardness Reduction" 
+              value={(results.initialHardness - results.softenedHardness).toFixed(1)} 
+              unit="mg/L" 
+              icon={<TrendingDown className="text-white w-4 h-4" />}
+              gradient="bg-indigo-600"
+              footer="Predicted Change"
             />
             <ResultCard 
               label="Sludge Prod." 
               value={results.sludgeProduced.toFixed(1)} 
               unit="mg/L" 
-              icon={<Trash2 className="text-white w-5 h-5" />}
+              icon={<Trash2 className="text-white w-4 h-4" />}
               gradient="bg-amber-600"
-              footer="Approx. Dry Solids"
+              footer="Dry Solids"
             />
           </div>
 
@@ -291,7 +300,7 @@ const App: React.FC = () => {
                 <QualityRow label="Equilibrium pH" value={results.softenedPh.toFixed(1)} />
                 <QualityRow label="Total Hardness" value={results.softenedHardness.toFixed(1)} unit="mg/L" highlight />
                 <QualityRow label="Final Alkalinity" value={results.softenedAlkalinity.toFixed(1)} unit="mg/L" />
-                <QualityRow label="Removal %" value={results.initialHardness > 0 ? (100 - (results.softenedHardness / results.initialHardness * 100)).toFixed(1) : "0.0"} unit="%" success />
+                <QualityRow label="Removal Efficiency" value={results.initialHardness > 0 ? (100 - (results.softenedHardness / results.initialHardness * 100)).toFixed(1) : "0.0"} unit="%" success />
               </div>
             </div>
 
@@ -382,14 +391,14 @@ const InputGroup: React.FC<{
 
 const ResultCard: React.FC<{ label: string; value: string; unit: string; icon: React.ReactNode; gradient: string; footer: string }> = ({ label, value, unit, icon, gradient, footer }) => (
   <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-200 hover:border-blue-100 transition-colors">
-    <div className={`w-10 h-10 ${gradient} rounded-xl flex items-center justify-center mb-5 shadow-inner`}>
+    <div className={`w-8 h-8 ${gradient} rounded-lg flex items-center justify-center mb-4 shadow-inner`}>
       {icon}
     </div>
     <div className="space-y-0.5">
       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{label}</p>
-      <div className="flex items-baseline gap-1.5">
-        <span className="text-2xl font-black text-slate-900 leading-none">{value}</span>
-        <span className="text-[10px] font-bold text-slate-400 uppercase leading-none">{unit}</span>
+      <div className="flex items-baseline gap-1">
+        <span className="text-xl font-black text-slate-900 leading-none">{value}</span>
+        <span className="text-[9px] font-bold text-slate-400 uppercase leading-none">{unit}</span>
       </div>
       <p className="text-[8px] font-bold text-slate-300 uppercase tracking-tight mt-1 pt-2 border-t border-slate-50">{footer}</p>
     </div>
