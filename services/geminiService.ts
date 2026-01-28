@@ -3,13 +3,15 @@ import { GoogleGenAI } from "@google/genai";
 import { WaterQualityData, SofteningResults } from '../types';
 
 export const getSofteningAdvice = async (input: WaterQualityData, output: SofteningResults): Promise<string> => {
-  // Check if API key is available
-  if (!process.env.API_KEY) {
+  // Use a safer way to access process.env for browser compatibility
+  const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : undefined;
+
+  if (!apiKey) {
     return "API Key is not configured. Please ensure you have selected a key if prompted.";
   }
 
   // Use Gemini 3 Pro for advanced engineering reasoning
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey });
   
   const prompt = `
     Role: Senior Water Process Engineer
@@ -54,9 +56,10 @@ export const getSofteningAdvice = async (input: WaterQualityData, output: Soften
     return response.text || "No insights generated.";
   } catch (error: any) {
     console.error("Gemini Error:", error);
-    if (error.message?.includes("entity was not found")) {
+    const msg = error.message || String(error);
+    if (msg.includes("entity was not found") || msg.includes("API key")) {
       return "ERROR_KEY_REQUIRED";
     }
-    return `Error generating insights: ${error.message || 'Unknown error'}`;
+    return `Error generating insights: ${msg}`;
   }
 };
