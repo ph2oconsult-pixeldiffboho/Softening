@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { WaterQualityData, SofteningResults, ChartDataPoint } from './types.ts';
-import { calculateSoftening } from './services/softeningCalculations.ts';
-import { getSofteningAdvice } from './services/geminiService.ts';
+import { WaterQualityData, SofteningResults, ChartDataPoint } from './types';
+import { calculateSoftening } from './services/softeningCalculations';
+import { getSofteningAdvice } from './services/geminiService';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
