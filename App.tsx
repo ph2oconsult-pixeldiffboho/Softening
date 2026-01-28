@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 
 const App: React.FC = () => {
-  // Input State
   const [inputs, setInputs] = useState<WaterQualityData>({
     ph: 7.8,
     calcium: 80,
@@ -24,7 +23,6 @@ const App: React.FC = () => {
     targetMg: 10
   });
 
-  // UI States
   const [aiInsights, setAiInsights] = useState<string>('');
   const [loadingInsights, setLoadingInsights] = useState(false);
   const [hasKey, setHasKey] = useState<boolean | null>(null);
@@ -38,7 +36,6 @@ const App: React.FC = () => {
           const selected = await aiStudio.hasSelectedApiKey();
           if (mounted) setHasKey(!!selected);
         } else {
-          // If not in AI Studio environment, assume process.env.API_KEY is handled
           if (mounted) setHasKey(true); 
         }
       } catch (err) {
@@ -61,7 +58,6 @@ const App: React.FC = () => {
     }
   };
 
-  // Memoized Calculations
   const results = useMemo(() => calculateSoftening(inputs), [inputs]);
 
   const chartData: ChartDataPoint[] = useMemo(() => [
